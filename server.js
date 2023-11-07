@@ -1,10 +1,35 @@
-import { createServer } from 'node:http'
+import { fastify } from 'fastify'
+import { DatabaseMemory } from './database-memory.js'
 
-const server = createServer((request, response) => {
-  console.log('oi')
+const server = fastify()
 
-  return response.end()
+const database = new DatabaseMemory()
+
+server.post('/videos', (request, reply) => {
+  database.create({
+    title: 'Video 01',
+    description: 'Esse é o video 01',
+    duration: 100,
+  })
+
+  console.log(database.list())
+
+  return reply.status(201)
 })
 
-server.listen(3333)
+server.get('/videos', () => {
+  return 'Hello Word'
+})
+
+server.get('/hello', () => {
+  return 'Hello teste'
+})
+
+server.get('/node', () => {
+  return 'Hello node.js'
+})
+
+server.listen({
+  port: 3333,
+})
 
